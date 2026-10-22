@@ -84,7 +84,8 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
       root44Python pass and test fixture reviewed; local-only. R2 c0dc3c2.
 - [x] Round 4: safe missing-policy errors/MCP initialization boundary; joint
       review and three-entry independent retest pass; root48Python/5DSH pass.
-- [ ] Round 5: repeat against the accepted round 4 version.
+- [x] Round 5: validated show-plan limit/switch fields; both reviews and
+      independent CLI retest pass; root50Python pass. No model tool added.
 - [ ] Final package/version/docs, Windows/Linux CI, remote and artifact verification.
 
 Requirements, joint reviews and bounded acceptance evidence are recorded in
@@ -94,8 +95,9 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Receive R5 user requirement against accepted R4, review/propose/implement/retest.
-Local Linux wheel suite is running as additional pre-push coverage; no system
-packages or network settings changed. Keep all iteration changes local
-until five rounds, root quality review, full tests and built-package checks pass.
-No external media probes, live profile changes or safety relaxation.
+Five rounds accepted. Prepare v0.2.0 consistent metadata, a version-consistency
+regression, final docs and exact packages. Root reviews aggregate diff; run full
+Windows/Linux installed-wheel and native DSH suites, asset/skill/manifest checks,
+known-dependency audits and package-byte/hash validation BEFORE the next push.
+R4 Linux installed wheel already passed48Python/5DSH; no system packages/network
+settings changed. No media probes, live profile changes or safety relaxation.

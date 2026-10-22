@@ -20,8 +20,8 @@ Astra（`gpt-6-astra`，high）扮演用户并实际测试；Sol 架构师独立
 | 1 | 正常资源竞争不应消耗尚未执行的下载审批 | 双方通过 | 独立复测通过；36 Python + 4 DSH | `bbfe7b3` |
 | 2 | 重复审批不应误报配置/权限故障 | 双方通过 | Astra 真实 CLI 复测通过；40 Python | `c0dc3c2` |
 | 3 | 不支持的人工字幕不应遮蔽可用自动字幕 | 双方通过 | 独立复测通过；44 Python | `25070dd` |
-| 4 | 缺失配置统一诊断，MCP 不泄露原始本地路径 | 双方通过 | 三入口独立复测通过；48 Python + 5 DSH | `Round 4` 本地提交 |
-| 5 | 基于第 4 轮版本测试 | 待开展 | 待开展 | 待提交 |
+| 4 | 缺失配置统一诊断，MCP 不泄露原始本地路径 | 双方通过 | 三入口独立复测通过；48 Python + 5 DSH | `1c9e29d` |
+| 5 | 操作者 show-plan 显示可信大小上限与下载开关 | 双方通过 | 独立 CLI 复测通过；50 Python | `Round 5` 本地提交 |
 
 ## R1：执行槽位忙时保留审批
 
@@ -142,3 +142,30 @@ diff 并独立运行 35 项相关测试后 ACCEPT。Astra 验证真实 CLI、std
 初始化异常受控，结论 PASS。证据为
 `.cache/astra-ux/round4/retest-evidence.json`。root 实际审阅差异，48 项
 Python 测试通过，新的 CLI 用 -I 单独复核通过，5 项 DSH 与资产同步通过。
+
+## R5：操作者独立核对计划限制
+
+**观察**：Astra 在 `1c9e29d` 用真实 CLI 创建下载关闭/1 MiB 和下载开启/
+2 MiB 的离线计划。创建结果含 max_bytes/downloads_enabled，show-plan
+却均缺失，仅有不可直接阅读的策略摘要；改变策略时旧计划已正确拒绝。
+证据为 `.cache/astra-ux/round5/evidence.json`。
+
+**最小方案**：仅在现有 CLI show-plan 分支通过 read_plan 全部校验后，
+为返回的计划副本补充 self.policy 对应的 max_bytes 与 downloads_enabled。
+保留原字段/JSON/退出码，不修改磁盘计划或 read_plan 的严格字段契约，
+不新增 Service 抽象、模型工具、完整状态管理或审批副作用。
+
+**验收**：真实 CLI 在两种策略下显示与创建计划一致的值，文件/期限/
+审批不变，无 worker/网络；过期、策略变更、损坏/额外字段继续拒绝。
+开启下载的显示不代表已审批，也不赋予重复消费许可，手册明确说明。
+
+**联合评审**：Astra 与 Sol 均 APPROVE。共同确认字段只来自通过策略
+摘要匹配的当前策略快照，返回副本保持磁盘、摘要和严格字段验证不变；
+下载开关仅表示策略状态，人工审批继续独立执行。
+
+**实现与验收**：CLI 返回副本新增两项已校验策略信息，磁盘契约与工具
+不变。Sol 审阅 diff 并独立运行 25 项 service 测试后 ACCEPT。Astra 真实
+CLI 验证两种策略数值一致、原字段/期限/已有审批均不变，伪造策略字段、
+过期、损坏、策略变化全部拒绝，开启但未审批不能进入工作槽位，结论
+PASS。证据为 `.cache/astra-ux/round5/retest-evidence.json`。root 审阅
+差异并运行 50 项 Python 集成测试通过；完整发布质量检查另行执行。

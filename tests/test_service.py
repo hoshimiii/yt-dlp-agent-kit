@@ -279,6 +279,106 @@ class ServiceTests(unittest.TestCase):
                 with Service(self.policy).work():
                     self.fail("Concurrent worker admitted")
 
+    def test_cli_show_plan_reports_validated_policy_without_writing_state(self):
+        root = Path(self.temp.name)
+        for enabled, limit in [(False, 1024 * 1024), (True, 2 * 1024 * 1024)]:
+            with self.subTest(enabled=enabled, limit=limit):
+                state = root / f"show-state-{enabled}"
+                output = root / f"show-output-{enabled}"
+                policy = replace(self.policy, state_root=str(state), download_root=str(output),
+                                 allow_downloads=enabled, max_media_bytes=limit)
+                config = root / f"show-config-{enabled}.json"
+                config.write_text(dumps(policy.__dict__), encoding="utf-8")
+                env = {**os.environ, "YTAGENT_CONFIG": str(config)}
+
+                def cli(*args, input_text=None):
+                    return subprocess.run([sys.executable, "-I", "-m", "yt_agent.cli", *args],
+                                          input=input_text, capture_output=True, text=True, timeout=10, env=env)
+
+                request = dumps({"tool": "video_plan_download", "arguments": {"url": URL}})
+                created = cli("call", input_text=request)
+                self.assertEqual(created.returncode, 0, created.stderr)
+                created_result = json.loads(created.stdout)["result"]
+                self.assertEqual(created_result["max_bytes"], limit)
+                self.assertEqual(created_result["downloads_enabled"], enabled)
+                identifier = created_result["plan_id"]
+                plan_path = state / identifier / "plan.json"
+                plan_bytes = plan_path.read_bytes()
+                expiry = json.loads(plan_bytes)["expires_at"]
+                approval = plan_path.parent / "approved.json"
+                self.assertFalse(approval.exists())
+
+                shown = cli("show-plan", identifier)
+                self.assertEqual(shown.returncode, 0, shown.stderr)
+                shown_result = json.loads(shown.stdout)["result"]
+                self.assertEqual(shown_result, {
+                    **{key: created_result[key] for key in ("plan_id", "url", "kind", "expires_at", "policy")},
+                    "max_bytes": limit, "downloads_enabled": enabled,
+                })
+                self.assertEqual(shown_result["expires_at"], expiry)
+                self.assertEqual(plan_path.read_bytes(), plan_bytes)
+                self.assertFalse(approval.exists())
+                self.assertFalse((plan_path.parent / "consumed.json").exists())
+                self.assertFalse((plan_path.parent / "busy").exists())
+                self.assertFalse(output.exists())
+                self.assertEqual(list(state.glob("job-*")), [])
+
+                if enabled:
+                    denied = cli("call", input_text=dumps({
+                        "tool": "video_download", "arguments": {"identifier": identifier}}))
+                    self.assertEqual(denied.returncode, 1)
+                    self.assertIn("approval", json.loads(denied.stdout)["error"].lower())
+                    self.assertFalse(approval.exists())
+                    self.assertFalse((plan_path.parent / "consumed.json").exists())
+                    self.assertFalse(output.exists())
+
+    def test_cli_show_plan_rejects_expired_policy_changed_and_malformed_plans(self):
+        root = Path(self.temp.name)
+
+        def create_plan(name, policy):
+            config = root / f"{name}.json"
+            config.write_text(dumps(policy.__dict__), encoding="utf-8")
+            env = {**os.environ, "YTAGENT_CONFIG": str(config)}
+            request = dumps({"tool": "video_plan_download", "arguments": {"url": URL}})
+            planned = subprocess.run([sys.executable, "-I", "-m", "yt_agent.cli", "call"],
+                                     input=request, capture_output=True, text=True, timeout=10, env=env)
+            self.assertEqual(planned.returncode, 0, planned.stderr)
+            identifier = json.loads(planned.stdout)["result"]["plan_id"]
+            return config, env, identifier, Path(policy.state_root) / identifier / "plan.json"
+
+        for case in ("expired", "malformed", "extra_field", "policy_changed"):
+            with self.subTest(case=case):
+                state = root / f"invalid-state-{case}"
+                output = root / f"invalid-output-{case}"
+                policy = replace(self.policy, state_root=str(state), download_root=str(output), allow_downloads=False)
+                config, env, identifier, plan_path = create_plan(f"invalid-config-{case}", policy)
+                original = plan_path.read_bytes()
+                if case == "expired":
+                    plan = json.loads(original)
+                    plan["expires_at"] = 1
+                    plan_path.write_text(dumps(plan), encoding="utf-8")
+                elif case == "malformed":
+                    plan_path.write_bytes(b"{")
+                elif case == "extra_field":
+                    plan = json.loads(original)
+                    plan["extra"] = "ignored"
+                    plan_path.write_text(dumps(plan), encoding="utf-8")
+                else:
+                    changed = replace(policy, max_media_bytes=policy.max_media_bytes + 1024)
+                    config.write_text(dumps(changed.__dict__), encoding="utf-8")
+                before_show = plan_path.read_bytes()
+                shown = subprocess.run([sys.executable, "-I", "-m", "yt_agent.cli", "show-plan", identifier],
+                                       capture_output=True, text=True, timeout=10, env=env)
+                self.assertEqual(shown.returncode, 1)
+                response = json.loads(shown.stdout)
+                self.assertFalse(response["ok"])
+                self.assertEqual(plan_path.read_bytes(), before_show)
+                self.assertNotIn("max_bytes", response)
+                self.assertNotIn("downloads_enabled", response)
+                self.assertFalse((plan_path.parent / "approved.json").exists())
+                self.assertFalse((plan_path.parent / "busy").exists())
+                self.assertFalse(output.exists())
+
     def test_cli_missing_config_is_controlled_and_corrected_config_plans_offline(self):
         root = Path(self.temp.name)
         config = root / "missing-config-marker.json"

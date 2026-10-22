@@ -24,7 +24,9 @@ def main():
         if args.command == "approve":
             result = service.approve(args.identifier)
         elif args.command == "show-plan":
-            _, result, _ = service.read_plan(args.identifier)
+            _, plan, _ = service.read_plan(args.identifier)
+            result = {**plan, "max_bytes": service.policy.max_media_bytes,
+                      "downloads_enabled": service.policy.allow_downloads}
         else:
             raw = sys.stdin.buffer.read(16385)
             if len(raw) > 16384:

@@ -125,7 +125,7 @@ claude --plugin-dir /absolute/path/yt-dlp-agent-kit
 
 ## 6. 下载审批
 
-操作者先设置 `allow_downloads: true`，再创建计划。策略变化会使旧计划失效。
+操作者先设置 `allow_downloads: true`，再创建计划。策略变化会使旧计划失效。`show-plan` 的 `max_bytes` 为校验后的媒体字节上限；`downloads_enabled` 只是当前策略开关，不代表计划已审批或允许重复使用。仍须另行审批，且计划只能消费一次。
 
 1. 用户请求具体下载，Agent 调用 `video_plan_download`，展示 URL、kind、ID、上限、到期时间。
 2. 操作者在使用同一配置的终端核对并审批：
