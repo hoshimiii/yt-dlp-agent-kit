@@ -30,8 +30,8 @@ async def list_tools():
 @server.call_tool()
 async def call_tool(name, arguments):
     cancelled = threading.Event()
-    service = Service(runner=partial(run_worker, cancel_event=cancelled))
     try:
+        service = Service(runner=partial(run_worker, cancel_event=cancelled))
         value = await asyncio.to_thread(service.call, {"tool": name, "arguments": arguments})
         return types.CallToolResult(content=[types.TextContent(type="text", text=dumps(value))], structuredContent=value)
     except asyncio.CancelledError:

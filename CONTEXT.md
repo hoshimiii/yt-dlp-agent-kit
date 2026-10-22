@@ -82,7 +82,8 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
       CLI/read-only/anomaly retest pass; 40 Python tests pass. R1 bbfe7b3.
 - [x] Round 3: supported manual/automatic selection; both reviews/retest pass,
       root44Python pass and test fixture reviewed; local-only. R2 c0dc3c2.
-- [ ] Round 4: repeat against the accepted round 3 version.
+- [x] Round 4: safe missing-policy errors/MCP initialization boundary; joint
+      review and three-entry independent retest pass; root48Python/5DSH pass.
 - [ ] Round 5: repeat against the accepted round 4 version.
 - [ ] Final package/version/docs, Windows/Linux CI, remote and artifact verification.
 
@@ -93,7 +94,8 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Receive R4 requirement from Astra against accepted R3, record smallest proposal
-and obtain both reviews before implementation. Keep all remaining changes local
+Receive R5 user requirement against accepted R4, review/propose/implement/retest.
+Local Linux wheel suite is running as additional pre-push coverage; no system
+packages or network settings changed. Keep all iteration changes local
 until five rounds, root quality review, full tests and built-package checks pass.
 No external media probes, live profile changes or safety relaxation.

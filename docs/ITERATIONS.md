@@ -19,8 +19,8 @@ Astra（`gpt-6-astra`，high）扮演用户并实际测试；Sol 架构师独立
 |---|---|---|---|---|
 | 1 | 正常资源竞争不应消耗尚未执行的下载审批 | 双方通过 | 独立复测通过；36 Python + 4 DSH | `bbfe7b3` |
 | 2 | 重复审批不应误报配置/权限故障 | 双方通过 | Astra 真实 CLI 复测通过；40 Python | `c0dc3c2` |
-| 3 | 不支持的人工字幕不应遮蔽可用自动字幕 | 双方通过 | 独立复测通过；44 Python | `Round 3` 本地提交 |
-| 4 | 基于第 3 轮版本测试 | 待开展 | 待开展 | 待提交 |
+| 3 | 不支持的人工字幕不应遮蔽可用自动字幕 | 双方通过 | 独立复测通过；44 Python | `25070dd` |
+| 4 | 缺失配置统一诊断，MCP 不泄露原始本地路径 | 双方通过 | 三入口独立复测通过；48 Python + 5 DSH | `Round 4` 本地提交 |
 | 5 | 基于第 4 轮版本测试 | 待开展 | 待开展 | 待提交 |
 
 ## R1：执行槽位忙时保留审批
@@ -112,3 +112,33 @@ VTT/SRT。只改变选择阶段；选定后仍执行原 URL、字节、文本与
 请求次数与选定轨道一致。证据为
 `.cache/astra-ux/round3/retest-evidence.json`。root 简化了测试中的嵌套
 条件和重复 guard 安装，44 项 Python 集成测试通过；本轮不推送。
+
+## R4：配置缺失受控诊断与 MCP 初始化错误边界
+
+**观察**：Astra 在 `25070dd` 使用 CLI、真实 stdio MCP 和 DSH bridge，
+指定不存在的隔离配置路径并调用离线计划工具。CLI/DSH 为模糊本地故障，
+MCP 把含完整路径的 FileNotFoundError 返回工具正文。根因为 Policy.load
+未映射缺失错误，且 MCP Service 构造在 try 之外。证据为
+`.cache/astra-ux/round4/evidence.json` 与 `dsh-evidence.json`。
+
+**最小方案**：Policy.load 对明确配置的 FileNotFoundError 映射为固定
+受控提示，要求操作者检查 YTAGENT_CONFIG/configPath，不包含实际路径、
+原异常或配置内容。MCP 将 Service 构造放入既有 try，初始化的其他失败
+也走原有安全错误分支。保留 CLI JSON/非零退出码、MCP isError 与 DSH
+错误契约；不新增诊断工具，不回退默认配置，不创建计划/启动 worker。
+
+**验收**：三个真实入口在缺失配置时语义一致，正文不含路径标记/异常
+类型/原始内容；修正配置后离线计划恢复；未指定配置默认行为保留。
+MCP 的其他初始化异常也不得越出受控边界。测试不进行外网访问。
+
+**联合评审**：Astra 与 Sol 均 APPROVE。Sol 强调不在底层 read_json
+全局映射文件错误，保留计划/审批文件的不同含义；验证 MCP 非 Rejected
+初始化异常、四工具发现、无 worker/输出副作用。纳入实现与回归。
+
+**实现与验收**：Policy.load 映射缺失文件，MCP 构造放入 try。Sol 检查
+diff 并独立运行 35 项相关测试后 ACCEPT。Astra 验证真实 CLI、stdio MCP
+与 DSH bridge 缺失诊断一致且不含路径标记，配置修正后同一 MCP 会话
+与另外两个入口都恢复离线计划，默认下载关闭、工具仍四个；其他 MCP
+初始化异常受控，结论 PASS。证据为
+`.cache/astra-ux/round4/retest-evidence.json`。root 实际审阅差异，48 项
+Python 测试通过，新的 CLI 用 -I 单独复核通过，5 项 DSH 与资产同步通过。

@@ -1,11 +1,13 @@
 from dataclasses import replace
 import json
+import os
 from pathlib import Path
 import socket
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from yt_agent.policy import Policy, Rejected, dumps, envelope, finite_number, language, public_ip, safe_path, text_data, video_url
 
@@ -47,6 +49,10 @@ class PolicyTests(unittest.TestCase):
         result = json.loads(dumps(envelope({"title": escaped})))
         self.assertEqual(result["trust"], "untrusted_external_data")
         self.assertEqual(result["data"]["title"], escaped)
+
+    def test_policy_load_without_config_keeps_defaults(self):
+        with patch.dict(os.environ, {"YTAGENT_CONFIG": ""}):
+            self.assertEqual(Policy.load(), Policy())
 
     def test_limits_types_and_hosts(self):
         for values in [{"allow_downloads": "false"}, {"timeout_seconds": True}, {"timeout_seconds": 10000},

@@ -279,6 +279,33 @@ class ServiceTests(unittest.TestCase):
                 with Service(self.policy).work():
                     self.fail("Concurrent worker admitted")
 
+    def test_cli_missing_config_is_controlled_and_corrected_config_plans_offline(self):
+        root = Path(self.temp.name)
+        config = root / "missing-config-marker.json"
+        request = dumps({"tool": "video_plan_download", "arguments": {"url": URL}})
+        env = os.environ.copy()
+        env["YTAGENT_CONFIG"] = str(config)
+        command = [sys.executable, "-I", "-m", "yt_agent.cli", "call"]
+        failed = subprocess.run(command, input=request, capture_output=True, text=True, timeout=10, env=env)
+        self.assertEqual(failed.returncode, 1)
+        self.assertEqual(failed.stderr, "")
+        response = json.loads(failed.stdout)
+        self.assertFalse(response["ok"])
+        self.assertEqual(response["error"], "Configured policy file was not found; ask the operator to check YTAGENT_CONFIG/configPath")
+        self.assertNotIn("missing-config-marker", failed.stdout + failed.stderr)
+        self.assertNotIn("FileNotFoundError", failed.stdout + failed.stderr)
+        self.assertFalse(Path(self.policy.state_root).exists())
+        self.assertFalse(Path(self.policy.download_root).exists())
+
+        config.write_text(dumps(self.policy.__dict__), encoding="utf-8")
+        planned = subprocess.run(command, input=request, capture_output=True, text=True, timeout=10, env=env)
+        self.assertEqual(planned.returncode, 0, planned.stderr)
+        result = json.loads(planned.stdout)["result"]
+        self.assertTrue(result["requires_local_approval"])
+        self.assertTrue((Path(self.policy.state_root) / result["plan_id"] / "plan.json").is_file())
+        self.assertFalse(Path(self.policy.download_root).exists())
+        self.assertEqual(list(Path(self.policy.state_root).glob("job-*")), [])
+
     def test_cli_rejects_injected_request_without_network(self):
         proc = subprocess.run([sys.executable, "-I", "-m", "yt_agent.cli", "call"],
                               input=dumps({"tool": "video_info", "arguments": {"url": "file:///etc/passwd"}}),

@@ -84,7 +84,11 @@ class Policy:
         path = path or os.environ.get("YTAGENT_CONFIG")
         if not path:
             return cls()
-        values = read_json(path)
+        try:
+            values = read_json(path)
+        except FileNotFoundError as exc:
+            raise Rejected(
+                "Configured policy file was not found; ask the operator to check YTAGENT_CONFIG/configPath") from exc
         if not isinstance(values, dict) or set(values) - set(cls.__dataclass_fields__):
             raise Rejected("Unknown configuration keys")
         return cls(**values)
