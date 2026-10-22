@@ -74,7 +74,8 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 
 - [x] Round 1: worker busy preserves approval; joint review, implementation,
       independent retest; 36 Python and four DSH tests pass.
-- [ ] Round 2: repeat against the accepted round 1 version.
+- [x] Round 2: valid repeat approval idempotent; joint review and independent
+      CLI/read-only/anomaly retest pass; 40 Python tests pass. R1 bbfe7b3.
 - [ ] Round 3: repeat against the accepted round 2 version.
 - [ ] Round 4: repeat against the accepted round 3 version.
 - [ ] Round 5: repeat against the accepted round 4 version.
@@ -87,7 +88,7 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Receive round 2 observed user problems from /root/astra_user_test against the
-accepted R1 code, record the smallest sufficient proposal, then obtain Astra
-and architect review before implementation. No external media probes, live
+Receive R3 observed user requirement from /root/astra_user_test against accepted
+R2, then record concrete proposal and obtain both reviews before implementation.
+Proposal and evidence are in docs/ITERATIONS.md. No external media probes, live
 profile changes or safety relaxation. Root coordinates; no worker descendants.

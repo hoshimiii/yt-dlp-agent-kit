@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -68,6 +69,72 @@ class ServiceTests(unittest.TestCase):
             with self.assertRaises(Rejected):
                 action(identifier)
         self.assertEqual(len(self.requests), 1)
+
+    def test_cli_approval_is_idempotent_and_consumes_once(self):
+        identifier = self.plan()
+        config = Path(self.temp.name) / "config.json"
+        config.write_text(dumps(self.policy.__dict__), encoding="utf-8")
+        env = os.environ.copy()
+        env["YTAGENT_CONFIG"] = str(config)
+        command = [sys.executable, "-I", "-m", "yt_agent.cli", "approve", identifier]
+        plan_path = Path(self.policy.state_root) / identifier / "plan.json"
+        plan_bytes = plan_path.read_bytes()
+        first = subprocess.run(command, capture_output=True, text=True, timeout=10, env=env)
+        approval = Path(self.policy.state_root) / identifier / "approved.json"
+        original_bytes = approval.read_bytes()
+        second = subprocess.run(command, capture_output=True, text=True, timeout=10, env=env)
+        self.assertEqual(first.returncode, 0)
+        self.assertEqual(second.returncode, 0)
+        self.assertEqual(first.stderr, "")
+        self.assertEqual(second.stderr, "")
+        first_result = json.loads(first.stdout)
+        second_result = json.loads(second.stdout)
+        self.assertEqual(first_result, second_result)
+        self.assertEqual(first_result["result"], {"approved": identifier, "expires_at": self.service.read_plan(identifier)[1]["expires_at"]})
+        self.assertEqual(approval.read_bytes(), original_bytes)
+        self.assertEqual(plan_path.read_bytes(), plan_bytes)
+        self.service.download(identifier)
+        with self.assertRaises(Rejected):
+            self.service.download(identifier)
+        self.assertEqual([request["operation"] for request in self.requests], ["download"])
+
+    def test_matching_existing_approval_is_read_only(self):
+        identifier = self.plan()
+        expected = self.service.approve(identifier)
+        approval = Path(self.policy.state_root) / identifier / "approved.json"
+        original_bytes = approval.read_bytes()
+        approval.chmod(0o400)
+        try:
+            with patch("yt_agent.service.write_new", side_effect=AssertionError("existing approval must not be rewritten")):
+                self.assertEqual(self.service.approve(identifier), expected)
+        finally:
+            approval.chmod(0o600)
+        self.assertEqual(approval.read_bytes(), original_bytes)
+
+    def test_malformed_or_mismatched_approval_is_not_overwritten(self):
+        for record in [b"{", dumps({"sha256": "0" * 64}).encode(),
+                       dumps({"sha256": "0" * 64, "extra": True}).encode()]:
+            with self.subTest(record=record):
+                identifier = self.plan()
+                self.service.approve(identifier)
+                approval = Path(self.policy.state_root) / identifier / "approved.json"
+                approval.write_bytes(record)
+                with self.assertRaises(Rejected):
+                    self.service.approve(identifier)
+                self.assertEqual(approval.read_bytes(), record)
+                self.assertFalse((approval.parent / "consumed.json").exists())
+
+    def test_approval_expiring_after_plan_lock_keeps_state_intact(self):
+        identifier = self.plan()
+        plan_dir = Path(self.policy.state_root) / identifier
+        expires_at = json.loads((plan_dir / "plan.json").read_text())["expires_at"]
+        with patch("yt_agent.service.time.time", side_effect=[expires_at - 1, expires_at]):
+            with self.assertRaisesRegex(Rejected, "expired"):
+                self.service.approve(identifier)
+        self.assertFalse((plan_dir / "approved.json").exists())
+        self.assertFalse((plan_dir / "consumed.json").exists())
+        self.assertFalse((plan_dir / "busy").exists())
+        self.assertEqual(self.requests, [])
 
     def test_modified_plan_invalidates_approval(self):
         identifier = self.plan()

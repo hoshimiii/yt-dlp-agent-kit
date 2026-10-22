@@ -171,7 +171,14 @@ class Service:
         with self.locked(directory):
             if (directory / "consumed.json").exists():
                 raise Rejected("This plan was already consumed; create a new plan")
-            write_new(directory / "approved.json", {"sha256": digest})
+            if plan["expires_at"] <= time.time():
+                raise Rejected("Plan is invalid, expired or belongs to a different policy")
+            approval = directory / "approved.json"
+            try:
+                if read_json(approval) != {"sha256": digest}:
+                    raise Rejected("Approval does not match the immutable plan")
+            except FileNotFoundError:
+                write_new(approval, {"sha256": digest})
         return {"approved": plan["plan_id"], "expires_at": plan["expires_at"]}
 
     def download(self, identifier):
