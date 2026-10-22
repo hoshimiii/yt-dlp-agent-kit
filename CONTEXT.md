@@ -68,3 +68,9 @@ both fixed with real yt-dlp regression fixtures. A running-worker cancellation
 and single global worker slot are now tested. External Windows fixture probe
 is blocked by reserved fake-IP DNS; no network setting changed. Only local
 fixture acceptance is claimed until a standard public CI live probe succeeds.
+
+Public repository created and main pushed. Initial Windows/Linux CI passed.
+Dependency audit then found MCP 1.28.0 advisories; upgraded to 1.30.0, reran
+30 Python tests, hashed-lock audit now reports no known vulnerabilities.
+Audit added to CI. Native DSH npm production audit also clean. Final CI and
+one bounded public fixture download are next; no local network relaxation.

@@ -3,6 +3,12 @@
 The checked-in tests cover observable behavior, not a promise of no bugs.
 Versions are pinned in uv.lock and adapters/dsh/package-lock.json.
 
+Initial dependency auditing identified known issues in MCP SDK 1.28.0. The
+runtime pin was upgraded to 1.30.0; the 30-test Python suite passes with that
+version. The fully hashed locked dependency audit and npm production audit
+report no known vulnerabilities at the validation time. This is a database
+snapshot, not proof that undiscovered issues do not exist.
+
 Local checks cover strict inputs, XML/control characters, connection-time
 guards, redirects/rebinding, immutable approvals, expiry/replay/failure,
 concurrency, paths and running-worker cancellation. A real stdio MCP client
@@ -31,5 +37,5 @@ were changed. Live YouTube/Bilibili/Vimeo compatibility remains site-dependent.
 No paid model calls, browser credentials or live user-profile changes were
 used. Full authenticated model conversations in each host are not proven by
 manifest/registry/protocol tests. CI validates Windows/Linux fixtures and
-packaging; consult actual workflow results. An explicit workflow-dispatch flag
+packaging and known-dependency audits; consult actual workflow results. An explicit workflow-dispatch flag
 can request the fixed public smoke test separately.

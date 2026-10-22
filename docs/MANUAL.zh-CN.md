@@ -153,7 +153,7 @@ Skill 禁止 Agent 运行审批命令或编辑状态。**同账户、拥有任�
 ## 8. 一手接口依据
 
 - [yt-dlp Python API](https://github.com/yt-dlp/yt-dlp#embedding-yt-dlp)
-- [MCP Python SDK v1.28.0](https://github.com/modelcontextprotocol/python-sdk/tree/v1.28.0)
+- [MCP Python SDK v1.30.0](https://github.com/modelcontextprotocol/python-sdk/tree/v1.30.0)
 - [DSH 工具契约](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)
 - [DSH bundle 安装](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)
 - [DSH Skills](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md)

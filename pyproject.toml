@@ -9,7 +9,7 @@ description = "Policy-controlled yt-dlp tools for DSH, Codex and Claude Code"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = ["yt-dlp==2026.10.21", "mcp==1.28.0"]
+dependencies = ["yt-dlp==2026.10.21", "mcp==1.30.0"]
 
 [project.scripts]
 yt-agent = "yt_agent.cli:main"
