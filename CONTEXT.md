@@ -6,7 +6,7 @@ Objective: complete five sequential user-driven improvement rounds on the
 existing yt-dlp tools for native DSH, Codex and Claude Code. Astra performs
 isolated user tests, root records requirements/proposals, Astra and the Sol
 architect review each proposal, and implementation is retested before its
-version-control checkpoint. Root is the sole writer of this file.
+version-control checkpoint. Completed as v0.2.0; root is the sole writer of this file.
 
 Active Authorization:
 - Target: existing yt-dlp-agent-kit project/repository; baseline main 6b9aa0e,
@@ -64,6 +64,9 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
   generated. Local pre-push quality gate is complete; no media probe was rerun.
 - Final-local-gate checkpoint saved; the Superrouter native compression reminder
   helper was launched once. Work continued without waiting for compaction.
+- Release v0.2.0 targets d7bd2fa. Main CI 39812544729 and iteration-branch CI
+  39812544410 passed both platforms. Published wheel/source/DSH attachments were
+  downloaded again and verified byte-for-byte and against SHA256SUMS.
 - Baseline v0.1.0 evidence below is historical, not final v0.2.0 acceptance:
 - 33 Python tests pass from the final installed wheel in a separate environment.
 - Four native DSH tests passed: actual registries, disposal and Python bridge.
@@ -100,7 +103,7 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 - [x] Round 5: validated show-plan limit/switch fields; both reviews and
       independent CLI retest pass; root50Python pass. No model tool added.
 - [x] Final package/version/docs and full local Windows/Linux quality gate.
-- [ ] Unified push, ordinary CI, versioned release and public artifact verification.
+- [x] Unified push, ordinary CI, versioned release and public artifact verification.
 
 Requirements, joint reviews and bounded acceptance evidence are recorded in
 docs/ITERATIONS.md. Source v0.1.0 verification above is baseline evidence, not
@@ -109,7 +112,7 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Commit final v0.2.0 metadata/docs and push the accepted batch to the same repo;
-observe ordinary CI only, then publish the exact packages and verify downloaded
-hashes/remote state. Complete local gate passed before any next push. All local
-test sessions ended; no manual external CI jobs or system repairs authorized.
+None. Five rounds, local acceptance, ordinary CI and public release verification
+are complete. No live host profile was changed, no media probe rerun, and no
+background work/monitoring is scheduled. Further installation or feature work
+requires a new user request within the existing safety boundaries.

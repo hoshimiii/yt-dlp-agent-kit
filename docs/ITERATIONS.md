@@ -191,3 +191,10 @@ PASS。证据为 `.cache/astra-ux/round5/retest-evidence.json`。root 审阅
 所有本地门槛均已通过后才进行统一推送。WSL 一度报告宿主资源不足；
 本项目测试进程结束、可用资源改善后，同目标的一次重试通过最终 Linux
 验收，未修改系统配置或关闭用户其他程序。没有再次触发外网站点测试。
+
+**发布验收**：v0.2.0 指向 `d7bd2fa`，主分支
+[CI 39812544729](https://github.com/hoshimiii/yt-dlp-agent-kit/actions/runs/39812544729)
+与迭代分支
+[CI 39812544410](https://github.com/hoshimiii/yt-dlp-agent-kit/actions/runs/39812544410)
+的 Windows/Linux 检查全部通过。发布附件重新下载后，与本地已验收的
+wheel、源码包、DSH tarball 逐字节一致，SHA-256 一致。原 v0.1.0 保留。

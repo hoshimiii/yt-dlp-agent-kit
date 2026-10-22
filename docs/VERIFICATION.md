@@ -8,6 +8,12 @@ have joint proposal review and independent retest evidence in
 [ITERATIONS.md](ITERATIONS.md). The complete local gate below passed before the
 next push; GitHub was not used to debug these iterations.
 
+The release commit `d7bd2fa` then passed ordinary Windows/Linux
+[main CI](https://github.com/hoshimiii/yt-dlp-agent-kit/actions/runs/39812544729)
+and [iteration-branch CI](https://github.com/hoshimiii/yt-dlp-agent-kit/actions/runs/39812544410).
+The published v0.2.0 wheel, source archive and DSH tarball were downloaded again
+and verified against both local bytes and the published SHA256SUMS.
+
 | Check | Result |
 |---|---|
 | Windows Python 3.13.2, source environment | 51 tests passed |
