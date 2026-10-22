@@ -198,7 +198,7 @@ def main():
         sys.stdout.write(dumps({"ok": True, "result": result}))
     except Exception as exc:
         # Upstream errors may contain signed URLs, local paths or remote instructions.
-        message = str(exc) if isinstance(exc, Rejected) else "Upstream operation failed or was blocked by policy; no automatic policy relaxation."
+        message = str(exc) if isinstance(exc, Rejected) else f"Upstream operation failed ({type(exc).__name__}); no automatic policy relaxation."
         sys.stdout.write(dumps({"ok": False, "error": message}))
         sys.exit(1)
 

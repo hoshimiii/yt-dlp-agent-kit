@@ -8,6 +8,14 @@ import unittest
 
 
 class WorkerTests(unittest.TestCase):
+    def test_worker_error_identifies_category_without_echoing_request(self):
+        result = subprocess.run([sys.executable, "-I", "-m", "yt_agent.worker"],
+                                input='{"secret_marker":"do-not-echo"}', capture_output=True, text=True, timeout=10)
+        self.assertNotEqual(result.returncode, 0)
+        value = json.loads(result.stdout)
+        self.assertIn("KeyError", value["error"])
+        self.assertNotIn("do-not-echo", result.stdout + result.stderr)
+
     def test_bounded_error_response_preserves_ytdlp_http_status(self):
         code = '''
 import io, urllib.response
