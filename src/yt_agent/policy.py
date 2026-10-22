@@ -108,8 +108,8 @@ def public_ip(host):
 def remote_url(value):
     if not isinstance(value, str) or not 1 <= len(value) <= 2048:
         raise Rejected("Expected a bounded HTTPS URL")
-    if any(ord(c) < 33 or ord(c) > 126 for c in value) or "\\" in value:
-        raise Rejected("URL must use printable ASCII without whitespace or backslashes")
+    if any(ord(c) < 33 or ord(c) > 126 or c in "<>\"'`\\" for c in value):
+        raise Rejected("URL must use encoded ASCII without whitespace, markup or backslashes")
     try:
         parsed = urlsplit(value)
         if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
