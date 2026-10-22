@@ -52,7 +52,10 @@ Remote text -> bounded escaped JSON data -> model/user
    before termination. Exact quotas need OS controls. A crash can leave bounded
    temp data and a stale lock; recovery is explicit and never age-based.
 6. Some sites need JS challenges, compressed responses, login, manifests or
-   FFmpeg. Such paths are rejected, not silently enabled.
+   FFmpeg. Such paths are rejected, not silently enabled. The 720p filter applies
+   only to known metadata; direct files with missing codec/resolution metadata
+   may be accepted under the same byte/protocol limits. Resolution is not an
+   independently measured security guarantee, and downloaded media is not decoded.
 7. macOS has normal kill+wait but lacks the implemented Windows/Linux memory
    and parent-death controls. It is an installation path, not a verified strong
    isolation target; validated target platforms are Windows and Linux.

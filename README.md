@@ -33,7 +33,7 @@ uv sync --frozen
 | `video_plan_download` | `url`, `kind="video"` | 本地创建 15 分钟计划；不下载、不审批 |
 | `video_download` | `identifier` | 消耗匹配审批并下载，返回实际位置和大小 |
 
-默认接受 YouTube、Bilibili、Vimeo 单视频链接；操作者可增加明确域名。支持范围是 yt-dlp 能力与本包安全限制的交集：视频仅单文件直连 HTTPS、最高 720p；不处理播放列表、直播、DASH/HLS 合并、DRM、登录 Cookie、转码或语音识别。音频优先选音频轨道，否则保留兼容合并媒体，可能仍含视频，不承诺 MP3。
+默认接受 YouTube、Bilibili、Vimeo 单视频链接；操作者可增加明确域名。支持范围是 yt-dlp 能力与本包安全限制的交集：视频仅单文件直连 HTTPS，已知清晰度时不高于 720p，元数据缺失时无法核实清晰度；不处理播放列表、直播、DASH/HLS 合并、DRM、登录 Cookie、转码或语音识别。音频优先选音频轨道，否则保留兼容合并媒体，可能仍含视频，不承诺 MP3。
 
 ## 项目树
 

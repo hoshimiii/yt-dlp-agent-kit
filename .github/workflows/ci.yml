@@ -33,7 +33,7 @@ jobs:
       - name: Audit locked Python dependencies
         run: |
           uv export --frozen --no-dev --no-emit-project --output-file audit-requirements.txt --quiet
-          uv run --frozen --with pip-audit pip-audit --disable-pip --require-hashes -r audit-requirements.txt --progress-spinner off
+          uv run --frozen --with pip-audit==2.10.1 pip-audit --disable-pip --require-hashes -r audit-requirements.txt --progress-spinner off
       - run: npm ci --ignore-scripts --prefix adapters/dsh
       - run: npm audit --omit=dev --prefix adapters/dsh --audit-level=high
       - name: Test native DSH registries and Python bridge

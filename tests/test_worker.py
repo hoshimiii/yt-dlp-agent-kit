@@ -38,7 +38,7 @@ print('passed')
         result = subprocess.run([sys.executable, "-I", "-c", code], capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def fixture(self, operation, kind="video"):
+    def fixture(self, operation, kind="video", bare=False):
         # Fresh process keeps the production process-local guards out of the test runner.
         code = '''
 import io, json, tempfile, urllib.response
@@ -48,7 +48,7 @@ from yt_dlp.networking._urllib import HTTPHandler
 from yt_dlp.extractor.generic import GenericIE
 from yt_agent.policy import Policy
 from yt_agent.worker import run
-OPERATION, KIND = json.loads(__import__('sys').argv[1])
+OPERATION, KIND, BARE = json.loads(__import__('sys').argv[1])
 def fake_https(handler, req):
     headers = Message()
     subtitle = req.full_url.endswith('.vtt')
@@ -67,7 +67,8 @@ def extract(self, url):
              'vcodec':'h264','acodec':'aac','height':360,'protocol':'https'},
             {'format_id':'audio','url':'https://fixture.example/audio.m4a','ext':'m4a',
              'vcodec':'none','acodec':'aac','protocol':'https'}]}
-GenericIE._real_extract = extract
+if not BARE:
+    GenericIE._real_extract = extract
 with tempfile.TemporaryDirectory() as folder:
     policy = Policy(allowed_hosts=('fixture.example',))
     result = run({'operation':OPERATION,'kind':KIND,'url':'https://fixture.example/watch',
@@ -76,7 +77,7 @@ with tempfile.TemporaryDirectory() as folder:
         assert __import__('pathlib').Path(folder,result['filename']).read_bytes() == b'fixture-media-bytes'
     print(json.dumps(result))
 '''
-        result = subprocess.run([sys.executable, "-I", "-c", code, json.dumps([operation, kind])],
+        result = subprocess.run([sys.executable, "-I", "-c", code, json.dumps([operation, kind, bare])],
                                 capture_output=True, text=True, timeout=15)
         self.assertEqual(result.returncode, 0, result.stderr)
         return json.loads(result.stdout)
@@ -93,6 +94,9 @@ with tempfile.TemporaryDirectory() as folder:
 
     def test_video_download(self):
         self.assertEqual(self.fixture("download")["filename"], "media.mp4")
+
+    def test_generic_direct_media_without_codec_or_resolution_metadata(self):
+        self.assertEqual(self.fixture("download", bare=True)["filename"], "media.mp4")
 
     def test_audio_selects_audio_before_ytdlp_construction(self):
         self.assertEqual(self.fixture("download", "audio")["filename"], "media.m4a")

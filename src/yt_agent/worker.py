@@ -105,7 +105,7 @@ def yt_options(policy, job, operation):
         "writeinfojson": False, "writethumbnail": False, "writedescription": False,
         "outtmpl": str(Path(job) / "media.%(ext)s"), "restrictfilenames": True,
         "max_filesize": policy.max_media_bytes, "progress_hooks": [bound_progress],
-        "format": "best[protocol=https][vcodec!=none][acodec!=none][height<=720]",
+        "format": "best[protocol=https][vcodec!=?none][acodec!=?none][height<=?720]",
         "skip_download": operation != "download", "ignoreerrors": False,
     }
 

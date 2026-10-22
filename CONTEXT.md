@@ -71,6 +71,13 @@ fixture acceptance is claimed until a standard public CI live probe succeeds.
 
 Public repository created and main pushed. Initial Windows/Linux CI passed.
 Dependency audit then found MCP 1.28.0 advisories; upgraded to 1.30.0, reran
-30 Python tests, hashed-lock audit now reports no known vulnerabilities.
+31 Python tests, hashed-lock audit now reports no known vulnerabilities.
 Audit added to CI. Native DSH npm production audit also clean. Final CI and
 one bounded public fixture download are next; no local network relaxation.
+
+Latest evidence: upgraded-dependency Windows/Linux CI passed. First Linux
+external probe retrieved metadata but failed direct-file format selection;
+no completed media download. Reproduced missing codec/resolution metadata in
+the actual Generic extractor, fixed optional metadata selection, added test31.
+Known >720p remains excluded; unknown resolution is documented rather than
+claimed verified. Same fixed <=5MiB fixture/approval will be retried once.
