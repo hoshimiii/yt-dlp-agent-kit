@@ -2,23 +2,29 @@
 
 ## Current Brief
 
-Objective: reusable yt-dlp tools and skills for DeepSeek Harness (native DSH
-bundle), Codex and Claude Code, with a complete manual/tree, executable risk
-controls, tests and a public repository. Root is the sole writer of this file.
+Objective: complete five sequential user-driven improvement rounds on the
+existing yt-dlp tools for native DSH, Codex and Claude Code. Astra performs
+isolated user tests, root records requirements/proposals, Astra and the Sol
+architect review each proposal, and implementation is retested before its
+version-control checkpoint. Root is the sole writer of this file.
 
 Active Authorization:
-- Target: yt-dlp-agent-kit local project and its new public GitHub repository.
+- Target: existing yt-dlp-agent-kit project/repository; baseline main 6b9aa0e,
+  working branch feat/v0.2.0-iterations. Existing v0.1.0 tag remains immutable.
 - Permitted: scoped edits, project-only dependency installs/tests, isolated
   adapter validation, Git management, public source/packages and standard free
-  public GitHub CI. One normal fixed W3C media download, <=5MiB, is permitted.
+  public GitHub CI. Native Astra user testing and Sol architecture review,
+  scoped implementation, regression checks, five round commits and a final
+  versioned package are authorized. Local fixtures are the acceptance baseline.
 - Prohibited: changing original TTS assets or live agent settings, reading
   browser credentials/cookies, media upload, secrets/private paths in public
-  artifacts, paid models/infrastructure, npm/PyPI publication, external messages,
+  artifacts, third-party paid APIs/infrastructure, npm/PyPI publication, external messages,
   DNS/TUN/proxy/route modifications or relaxing safety to pass a test.
-- Completion: source/package integrity, core and three adapters evidenced,
-  accurate manual/tree/security limits, independent review, verified public
-  source and CI. Never claim zero bugs, absolute injection immunity or an OS
-  sandbox. Full authenticated host conversations are outside these local tests.
+- Completion: five distinct rounds with observed user needs, recorded scope and
+  design, joint user/architect review, implementation and retest evidence;
+  coherent version/package/docs and clean remote version control. Never claim
+  zero bugs, absolute injection immunity or an OS sandbox. Full authenticated
+  host conversations are outside these isolated tests.
 - Stop: new login/permission challenge, unapproved destructive/resource target,
   discovered secrets, unsafe dependency install hooks, or confirmed site-access
   denial. Preserve state; do not repeat unchanged failures or bypass a denial.
@@ -66,19 +72,21 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 
 ## Pending List
 
-- [x] Shared core, approval CLI, MCP and native DSH bundle/Skill.
-- [x] Manual, project tree, security design, frozen dependencies and packages.
-- [x] Local security/protocol/media fixtures and independent review/fixes.
-- [x] Public repository created and source pushed.
-- [x] Verify Windows/Linux default CI logs for final runtime code.
-- [x] Record external probe limitation and stop on confirmed access denial.
-- [x] Reconcile final verification/state, build exact release artifacts,
-      publish a source/package release and verify hashes/remote contents.
+- [ ] Round 1: Astra use -> recorded proposal -> joint review -> implementation -> retest/commit.
+- [ ] Round 2: repeat against the accepted round 1 version.
+- [ ] Round 3: repeat against the accepted round 2 version.
+- [ ] Round 4: repeat against the accepted round 3 version.
+- [ ] Round 5: repeat against the accepted round 4 version.
+- [ ] Final package/version/docs, Windows/Linux CI, remote and artifact verification.
+
+Requirements, joint reviews and bounded acceptance evidence are recorded in
+docs/ITERATIONS.md. Source v0.1.0 verification above is baseline evidence, not
+proof of the five new rounds. OpenViking lookup returned no relevant project
+record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Implementation and packaging are complete within the stated scope. Install into
-an isolated host profile using docs/MANUAL.zh-CN.md when the operator requests
-installation. No real host profile was modified, no external probe remains
-authorized after its access-denial stop condition, and no background monitoring
-or paid work is scheduled. Do not claim site compatibility from fixture tests.
+Receive round 1 observed user problems from /root/astra_user_test, record the
+smallest sufficient proposal, then obtain Astra and architect review before
+implementation. No external media probes, live profile changes or safety
+relaxation. Root coordinates; native worker contracts prohibit further delegation.
