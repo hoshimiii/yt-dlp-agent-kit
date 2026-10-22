@@ -143,8 +143,10 @@ def run(request):
             })
         if op == "subtitles":
             lang = language(request["language"])
-            tracks = (info.get("subtitles") or {}).get(lang) or (info.get("automatic_captions") or {}).get(lang)
-            track = next((t for t in (tracks or []) if t.get("ext") in ("vtt", "srt")), None)
+            manual_tracks = (info.get("subtitles") or {}).get(lang) or []
+            automatic_tracks = (info.get("automatic_captions") or {}).get(lang) or []
+            track = next((t for t in manual_tracks + automatic_tracks
+                          if t.get("ext") in ("vtt", "srt")), None)
             if not track:
                 raise Rejected("No VTT/SRT subtitle track for the requested language")
             remote_url(track["url"])

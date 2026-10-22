@@ -16,6 +16,10 @@ Active Authorization:
   public GitHub CI. Native Astra user testing and Sol architecture review,
   scoped implementation, regression checks, five round commits and a final
   versioned package are authorized. Local fixtures are the acceptance baseline.
+- User correction: finish all five local iterations, root code-quality review,
+  complete tests and artifact validation BEFORE the next push. No intermediate
+  pushes or GitHub external-site debugging. Existing remote R1 CI 39804781364
+  passed; earlier failure notifications came from manual external probes.
 - Prohibited: changing original TTS assets or live agent settings, reading
   browser credentials/cookies, media upload, secrets/private paths in public
   artifacts, third-party paid APIs/infrastructure, npm/PyPI publication, external messages,
@@ -76,7 +80,8 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
       independent retest; 36 Python and four DSH tests pass.
 - [x] Round 2: valid repeat approval idempotent; joint review and independent
       CLI/read-only/anomaly retest pass; 40 Python tests pass. R1 bbfe7b3.
-- [ ] Round 3: repeat against the accepted round 2 version.
+- [x] Round 3: supported manual/automatic selection; both reviews/retest pass,
+      root44Python pass and test fixture reviewed; local-only. R2 c0dc3c2.
 - [ ] Round 4: repeat against the accepted round 3 version.
 - [ ] Round 5: repeat against the accepted round 4 version.
 - [ ] Final package/version/docs, Windows/Linux CI, remote and artifact verification.
@@ -88,7 +93,7 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Receive R3 observed user requirement from /root/astra_user_test against accepted
-R2, then record concrete proposal and obtain both reviews before implementation.
-Proposal and evidence are in docs/ITERATIONS.md. No external media probes, live
-profile changes or safety relaxation. Root coordinates; no worker descendants.
+Receive R4 requirement from Astra against accepted R3, record smallest proposal
+and obtain both reviews before implementation. Keep all remaining changes local
+until five rounds, root quality review, full tests and built-package checks pass.
+No external media probes, live profile changes or safety relaxation.

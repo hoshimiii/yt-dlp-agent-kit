@@ -13,6 +13,8 @@
 
 也可由操作者执行 `uv tool install .` 创建独立工具环境，再按 `uv tool dir --bin` 的结果配置 PATH。该方式不读取 `uv.lock`；需要完整复现锁定依赖时使用上述 `uv sync --frozen`。本包不自动修改 shell 或全局 Agent 设置。
 
+字幕工具对指定语言优先选用支持的人工 VTT/SRT 轨道，再选自动轨道；选定轨道失败时不会切换来源，也不转写音频。
+
 ## 2. 配置
 
 默认下载关闭；状态/输出分别为用户主目录的 `.yt-dlp-agent-kit/state` 与 `downloads`。不加载已有 yt-dlp 配置、浏览器 Cookie、`.netrc` 或环境代理。
