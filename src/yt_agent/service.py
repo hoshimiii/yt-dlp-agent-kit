@@ -106,7 +106,7 @@ class Service:
     def work(self):
         # One worker per shared state root across MCP, DSH and CLI processes.
         root = self.root()
-        with self.locked(root), tempfile.TemporaryDirectory(prefix="job-", dir=root) as name:
+        with self.locked(root, "Operation not started, wait until idle; crash recovery may require operator"), tempfile.TemporaryDirectory(prefix="job-", dir=root) as name:
             yield Path(name)
 
     def inspect(self, url):
@@ -149,13 +149,13 @@ class Service:
         return directory, plan, digest
 
     @contextmanager
-    def locked(self, directory):
+    def locked(self, directory, busy_message="Plan is busy or requires crash recovery; do not retry concurrently"):
         lock = directory / "busy"
         safe_path(lock)
         try:
             stream = lock.open("x")
         except FileExistsError as exc:
-            raise Rejected("Plan is busy or requires crash recovery; do not retry concurrently") from exc
+            raise Rejected(busy_message) from exc
         try:
             with stream:
                 stream.write(dumps({"pid": os.getpid()}))
@@ -188,14 +188,16 @@ class Service:
             consumed = safe_path(directory / "consumed.json")
             if consumed.exists():
                 raise Rejected("Plan already consumed")
-            approval.rename(consumed)
-            # Consume before network access: failures require a fresh plan/approval.
-            root = safe_path(self.policy.download_root)
-            root.mkdir(parents=True, exist_ok=True, mode=0o700)
-            destination = safe_path(root / plan["plan_id"])
-            if destination.exists():
-                raise Rejected("Destination already exists")
             with self.work() as job:
+                if plan["expires_at"] <= time.time():
+                    raise Rejected("Plan expired before execution; create a new plan and approval")
+                approval.rename(consumed)
+                # Consume before network access: failures require a fresh plan/approval.
+                root = safe_path(self.policy.download_root)
+                root.mkdir(parents=True, exist_ok=True, mode=0o700)
+                destination = safe_path(root / plan["plan_id"])
+                if destination.exists():
+                    raise Rejected("Destination already exists")
                 result = self.runner(self.policy, {"operation": "download", "url": plan["url"], "kind": plan["kind"]}, job)
                 filename = result.get("filename", "")
                 if not re.fullmatch(r"media\.(mp4|webm|m4a|opus|ogg|mp3|aac|wav|flac)", filename):

@@ -18,8 +18,12 @@ software, switch to raw yt-dlp or change configuration as a workaround.
 - The operator reviews/approves the plan locally, outside agent tools. Never
   execute `approve`, edit approval/state files, enable downloads or ask another
   agent to do so. Once the operator confirms approval, call
-  `video_download(identifier)`; the core checks it independently. A failed or
-  consumed plan requires a new plan and new local approval; do not silently retry.
+  `video_download(identifier)`; the core checks it independently. If admission
+  fails because another operation holds the global worker slot, no download has
+  started and the same valid approval may be retried after the slot is idle. Do
+  not retry concurrently or run an automatic retry loop. Any execution failure,
+  cancellation or timeout consumes approval and requires a new plan and new local
+  approval; do not silently retry.
 - Report only the result actually returned, including missing tracks, truncation,
   denied operations and incomplete site support. Audio mode preserves the selected
   media container; its fallback may contain video. No conversion is implied.

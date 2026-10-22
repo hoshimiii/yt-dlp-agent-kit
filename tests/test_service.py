@@ -94,6 +94,50 @@ class ServiceTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(Rejected):
                 self.service.download(value)
 
+    def test_global_busy_preserves_approval_for_same_plan_retry(self):
+        identifier = self.plan()
+        self.service.approve(identifier)
+        plan_dir = Path(self.policy.state_root) / identifier
+        with self.service.work():
+            with self.assertRaisesRegex(Rejected, "Operation not started, wait until idle; crash recovery may require operator"):
+                self.service.download(identifier)
+            self.assertTrue((plan_dir / "approved.json").exists())
+            self.assertFalse((plan_dir / "consumed.json").exists())
+            self.assertEqual(self.requests, [])
+            self.assertFalse(Path(self.policy.download_root).exists())
+        result = self.service.download(identifier)
+        self.assertEqual(Path(result["path"]).read_bytes(), b"media-fixture")
+        self.assertEqual([request["operation"] for request in self.requests], ["download"])
+        with self.assertRaises(Rejected):
+            self.service.download(identifier)
+        self.assertEqual(len(self.requests), 1)
+
+    def test_plan_lock_and_global_lock_have_distinct_messages(self):
+        identifier = self.plan()
+        self.service.approve(identifier)
+        plan_dir = Path(self.policy.state_root) / identifier
+        with self.service.locked(plan_dir):
+            with self.assertRaisesRegex(Rejected, "Plan is busy or requires crash recovery"):
+                self.service.download(identifier)
+        with self.service.work():
+            with self.assertRaisesRegex(Rejected, "Operation not started, wait until idle"):
+                self.service.download(identifier)
+
+    def test_plan_expiring_during_admission_retains_approval(self):
+        identifier = self.plan()
+        self.service.approve(identifier)
+        plan_dir = Path(self.policy.state_root) / identifier
+        expires_at = json.loads((plan_dir / "plan.json").read_text())["expires_at"]
+        with patch("yt_agent.service.time.time", side_effect=[expires_at - 1, expires_at]):
+            with self.assertRaisesRegex(Rejected, "Plan expired before execution"):
+                self.service.download(identifier)
+        self.assertTrue((plan_dir / "approved.json").exists())
+        self.assertFalse((plan_dir / "consumed.json").exists())
+        self.assertFalse((plan_dir / "busy").exists())
+        self.assertFalse(Path(self.policy.download_root).exists())
+        self.assertEqual(self.requests, [])
+        self.assertEqual(list(Path(self.policy.state_root).glob("job-*")), [])
+
     def test_failed_download_consumes_approval(self):
         identifier = self.plan()
         self.service.approve(identifier)

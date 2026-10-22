@@ -72,7 +72,8 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 
 ## Pending List
 
-- [ ] Round 1: Astra use -> recorded proposal -> joint review -> implementation -> retest/commit.
+- [x] Round 1: worker busy preserves approval; joint review, implementation,
+      independent retest; 36 Python and four DSH tests pass.
 - [ ] Round 2: repeat against the accepted round 1 version.
 - [ ] Round 3: repeat against the accepted round 2 version.
 - [ ] Round 4: repeat against the accepted round 3 version.
@@ -86,7 +87,7 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Receive round 1 observed user problems from /root/astra_user_test, record the
-smallest sufficient proposal, then obtain Astra and architect review before
-implementation. No external media probes, live profile changes or safety
-relaxation. Root coordinates; native worker contracts prohibit further delegation.
+Receive round 2 observed user problems from /root/astra_user_test against the
+accepted R1 code, record the smallest sufficient proposal, then obtain Astra
+and architect review before implementation. No external media probes, live
+profile changes or safety relaxation. Root coordinates; no worker descendants.
