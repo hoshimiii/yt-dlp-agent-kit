@@ -2,6 +2,8 @@
 
 一套共用核心的公共视频工具和 Skill：**DeepSeek Harness 原生插件、Codex 插件、Claude Code 插件**。提供视频信息、已有字幕和受控下载，无需依赖第三方 yt-dlp MCP。
 
+[v0.1.0 预发布下载](https://github.com/hoshimiii/yt-dlp-agent-kit/releases/tag/v0.1.0)：Python wheel、完整源码、DSH 原生插件包及 SHA-256 校验文件。使用前请查看[验证范围与限制](docs/VERIFICATION.md)。
+
 | 客户端 | 接入形式 |
 |---|---|
 | DeepSeek Harness / DSH | 原生 Cordis bundle，注册工具和打包 Skill |

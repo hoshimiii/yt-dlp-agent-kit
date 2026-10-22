@@ -46,7 +46,7 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 - Four native DSH tests passed: actual registries, disposal and Python bridge.
 - Claude native plugin/marketplace validation passes; Codex local marketplace
   discovery verified in isolated configuration; Skill Creator validator passes.
-- Windows/Linux job logs for source 2bbbae1 (run 39796090923) record 33 Python
+- Windows/Linux job logs for release source 3735b94 (run 39797014123) record 33 Python
   and four DSH tests, clean known-dependency audits and successful builds.
 - Hashed locked Python audit and npm production audit report no known issues at
   check time. This does not prove undiscovered vulnerabilities absent.
@@ -60,6 +60,9 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 - Site-specific live compatibility, authenticated model conversations and macOS
   isolation are not claimed. Same-account arbitrary shell access remains outside
   this application's security boundary; protect policy/state with host controls.
+- Public prerelease v0.1.0 targets 3735b94. Published wheel, source archive and
+  native DSH tarball were downloaded again and compared byte-for-byte and via
+  SHA-256 with the inspected artifacts. No npm/PyPI publication was performed.
 
 ## Pending List
 
@@ -69,12 +72,13 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 - [x] Public repository created and source pushed.
 - [x] Verify Windows/Linux default CI logs for final runtime code.
 - [x] Record external probe limitation and stop on confirmed access denial.
-- [ ] Reconcile final verification/state, build exact release artifacts,
+- [x] Reconcile final verification/state, build exact release artifacts,
       publish a source/package release and verify hashes/remote contents.
 
 ## Exact Next Action
 
-Build final wheel/sdist/native DSH tarball, run the suite against the installed
-wheel, inspect exact packaged files, and publish a versioned GitHub release with
-SHA-256 sums. Verify final default CI and public remote contents. Do not restart
-the external probe or repeat checks without a changed artifact or open concern.
+Implementation and packaging are complete within the stated scope. Install into
+an isolated host profile using docs/MANUAL.zh-CN.md when the operator requests
+installation. No real host profile was modified, no external probe remains
+authorized after its access-denial stop condition, and no background monitoring
+or paid work is scheduled. Do not claim site compatibility from fixture tests.
