@@ -1,0 +1,9 @@
+{
+  "name": "yt-dlp-agent-kit",
+  "version": "0.1.0",
+  "description": "Public video metadata, subtitles and policy-controlled downloads",
+  "license": "MIT",
+  "author": {"name": "yt-dlp-agent-kit contributors"},
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "yt-dlp Media"
+  short_description: "Inspect video links and safely prepare media downloads"
+  default_prompt: "Use $yt-media to inspect this video and list its subtitle languages."

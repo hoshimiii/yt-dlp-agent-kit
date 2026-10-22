@@ -1,0 +1,9 @@
+{
+  "name": "yt-dlp-agent-kit-local",
+  "plugins": [{
+    "name": "yt-dlp-agent-kit",
+    "source": {"source": "local", "path": "./"},
+    "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+    "category": "Productivity"
+  }]
+}

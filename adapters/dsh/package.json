@@ -1,0 +1,26 @@
+{
+  "name": "dsh-yt-dlp-agent-kit",
+  "version": "0.1.0",
+  "description": "Native DSH tools and skill backed by the policy-controlled yt-dlp Agent Kit",
+  "license": "MIT",
+  "homepage": "https://github.com/hoshimiii/yt-dlp-agent-kit",
+  "repository": {"type": "git", "url": "https://github.com/hoshimiii/yt-dlp-agent-kit.git", "directory": "adapters/dsh"},
+  "type": "module",
+  "main": "index.js",
+  "exports": {".": "./index.js"},
+  "files": ["index.js", "bridge.js", "tools.json", "cordis.patch.yml", "skills", "LICENSE"],
+  "engines": {"node": ">=22", "dsh": ">=0.2.1-rc.2 <0.3.0"},
+  "dsh": {"bundle": {"patch": "./cordis.patch.yml"}},
+  "scripts": {"test": "node --test test/*.test.js"},
+  "dependencies": {"@deepseek-ai/schemastery": "3.18.5"},
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.5",
+    "@deepseek-ai/dsh-tools": "0.2.1-rc.2",
+    "@deepseek-ai/dsh-skill": "0.2.1-rc.2"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.5",
+    "@deepseek-ai/dsh-tools": "0.2.1-rc.2",
+    "@deepseek-ai/dsh-skill": "0.2.1-rc.2"
+  }
+}

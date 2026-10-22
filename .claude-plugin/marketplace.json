@@ -1,0 +1,6 @@
+{
+  "name": "yt-dlp-agent-kit",
+  "owner": {"name": "yt-dlp-agent-kit contributors"},
+  "metadata": {"description": "Public video tools and skills for multiple agent clients"},
+  "plugins": [{"name": "yt-dlp-agent-kit", "source": "./", "description": "Policy-controlled public video tools"}]
+}

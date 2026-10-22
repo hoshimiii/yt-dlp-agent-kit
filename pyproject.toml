@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "yt-dlp-agent-kit"
+version = "0.1.0"
+description = "Policy-controlled yt-dlp tools for DSH, Codex and Claude Code"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["yt-dlp==2026.10.21", "mcp==1.28.0"]
+
+[project.scripts]
+yt-agent = "yt_agent.cli:main"
+yt-agent-mcp = "yt_agent.mcp_server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/yt_agent"]

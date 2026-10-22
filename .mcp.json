@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "yt-dlp-agent-kit": {"command": "yt-agent-mcp", "args": []}
+  }
+}
