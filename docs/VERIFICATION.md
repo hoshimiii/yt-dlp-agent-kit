@@ -4,7 +4,7 @@ The checked-in tests cover observable behavior, not a promise of no bugs.
 Versions are pinned in uv.lock and adapters/dsh/package-lock.json.
 
 Initial dependency auditing identified known issues in MCP SDK 1.28.0. The
-runtime pin was upgraded to 1.30.0; the 31-test Python suite passes with that
+runtime pin was upgraded to 1.30.0; the 32-test Python suite passes with that
 version. The fully hashed locked dependency audit and npm production audit
 report no known vulnerabilities at the validation time. This is a database
 snapshot, not proof that undiscovered issues do not exist.
@@ -21,6 +21,11 @@ rejected its download because the bare media response lacks codec/resolution
 metadata. That case was reproduced with the real Generic extractor and fixed:
 unknown metadata is allowed under the same HTTPS/container/byte limits, while
 known resolutions above 720p remain excluded. A regression covers this case.
+
+Full HTTP error-path validation then found that a custom response proxy hid
+HTTP statuses from yt-dlp. Bounds now instrument the original response's read
+methods, preserving its standard-library type. A real urllib/yt-dlp synthetic
+403 regression verifies both status translation and the bounded error body.
 
 Native DSH tests load actual Cordis ToolRuntime and SkillRegistry, register all
 four tools and a packaged skill, verify disposal and invoke the installed

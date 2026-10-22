@@ -8,6 +8,34 @@ import unittest
 
 
 class WorkerTests(unittest.TestCase):
+    def test_bounded_error_response_preserves_ytdlp_http_status(self):
+        code = '''
+import io, urllib.response
+from email.message import Message
+import yt_dlp
+from yt_dlp.networking._urllib import HTTPHandler
+from yt_dlp.networking.exceptions import HTTPError
+from yt_agent.worker import install_guards, yt_options
+from yt_agent.policy import Policy, Rejected
+def forbidden(handler, req):
+    r = urllib.response.addinfourl(io.BytesIO(b'X'*100),Message(),req.full_url,403)
+    r.msg = 'Forbidden'
+    return r
+HTTPHandler.https_open = forbidden
+install_guards(max_network_bytes=10)
+with yt_dlp.YoutubeDL(yt_options(Policy(),'.','inspect')) as ydl:
+    try: ydl.urlopen('https://fixture.example/start')
+    except HTTPError as exc:
+        assert exc.status == 403
+        try: exc.response.read()
+        except Rejected: pass
+        else: raise AssertionError('error body bypassed the byte budget')
+    else: raise AssertionError('HTTP error translation lost')
+print('passed')
+'''
+        result = subprocess.run([sys.executable, "-I", "-c", code], capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_redirect_and_dns_rebinding_are_blocked(self):
         code = '''
 import io, socket, urllib.response

@@ -26,32 +26,27 @@ def install_guards(max_network_bytes=4 * 1024 * 1024):
     from yt_dlp.networking._urllib import HTTPHandler
     remaining = max_network_bytes
 
-    class BoundedResponse:
-        def __init__(self, response):
-            self.response = response
+    def bound_response(response):
+        original_read = response.read
 
-        def __getattr__(self, key):
-            return getattr(self.response, key)
-
-        def read(self, size=-1):
+        def read(size=-1):
             nonlocal remaining
             requested = remaining + 1 if size is None or size < 0 else min(size, remaining + 1)
-            value = self.response.read(requested)
+            value = original_read(requested)
             remaining -= len(value)
             if remaining < 0:
                 raise Rejected("Network response budget exceeded")
             return value
 
-        def readinto(self, buffer):
-            value = self.read(len(buffer))
+        def readinto(buffer):
+            value = read(len(buffer))
             buffer[:len(value)] = value
             return len(value)
 
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *args):
-            self.response.close()
+        # Preserve HTTPResponse/addinfourl identity for yt-dlp's HTTP-error adapter.
+        response.read = read
+        response.readinto = readinto
+        return response
 
     class PublicSocket(original_socket):
         def connect(self, address):
@@ -77,7 +72,7 @@ def install_guards(max_network_bytes=4 * 1024 * 1024):
         if response.headers.get("Content-Encoding", "identity").lower().strip() not in ("", "identity"):
             response.close()
             raise Rejected("Compressed HTTP responses are disabled")
-        return BoundedResponse(response)
+        return bound_response(response)
 
     def deny_process(*args, **kwargs):
         raise Rejected("External executables are disabled in the worker")
