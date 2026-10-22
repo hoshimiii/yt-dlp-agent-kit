@@ -2,7 +2,7 @@
 
 一套共用核心的公共视频工具和 Skill：**DeepSeek Harness 原生插件、Codex 插件、Claude Code 插件**。提供视频信息、已有字幕和受控下载，无需依赖第三方 yt-dlp MCP。
 
-[v0.1.0 预发布下载](https://github.com/hoshimiii/yt-dlp-agent-kit/releases/tag/v0.1.0)：Python wheel、完整源码、DSH 原生插件包及 SHA-256 校验文件。使用前请查看[验证范围与限制](docs/VERIFICATION.md)。
+[v0.2.0 预发布下载](https://github.com/hoshimiii/yt-dlp-agent-kit/releases/tag/v0.2.0)：Python wheel、完整源码、DSH 原生插件包及 SHA-256 校验文件。使用前请查看[验证范围与限制](docs/VERIFICATION.md)及[五轮优化记录](docs/ITERATIONS.md)。
 
 | 客户端 | 接入形式 |
 |---|---|
@@ -69,7 +69,8 @@ yt-dlp-agent-kit/
 ├── docs/
 │   ├── MANUAL.zh-CN.md              # 安装、使用、运维
 │   ├── SECURITY-DESIGN.md           # 威胁、防护、剩余风险
-│   └── VERIFICATION.md              # 验证记录与限制
+│   ├── VERIFICATION.md              # 验证记录与限制
+│   └── ITERATIONS.md                # 五轮需求、方案、联合评审与验收
 ├── scripts/
 │   ├── sync_dsh_assets.py
 │   └── smoke_live.py                # 显式外网样本测试

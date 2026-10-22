@@ -1,6 +1,6 @@
 {
   "name": "dsh-yt-dlp-agent-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Native DSH tools and skill backed by the policy-controlled yt-dlp Agent Kit",
   "license": "MIT",
   "homepage": "https://github.com/hoshimiii/yt-dlp-agent-kit",

@@ -21,7 +21,7 @@ Remote text -> bounded escaped JSON data -> model/user
 |---|---|---|
 | Shell/argument injection | Fixed argument arrays, stdin JSON, no shell/raw options | CLI/DSH malformed-input tests |
 | Prompt hijacking/role spoofing | Field allowlist, trust envelope, bounded text, Skill data/authority separation; no approval/config tool | Metadata/subtitle fixtures; independent skill review |
-| XML/XXE/control injection | Escape markup/quotes, strip controls/bidi; no XML parsing or instruction-template interpolation | XML/control fixtures |
+| XML/control injection in returned text | Escape markup/quotes, strip controls/bidi; titles/subtitles are not parsed as XML or interpolated into instruction templates | XML/control fixtures |
 | SSRF/redirect/DNS rebinding | HTTPS requests, entry allowlist, every actual Python socket checks resolved global IP and port443; urllib-only transport | Private redirects, rebinding, IPv6/private/multicast tests |
 | Unapproved/replayed download | Default off; immutable-plan SHA-256, policy fingerprint, TTL, consume before network | Missing/modified/expired/replayed/failure tests |
 | Concurrency amplification | Per-plan exclusive lock and one worker per shared state root | Concurrent-consumer/global-slot tests |
@@ -29,7 +29,7 @@ Remote text -> bounded escaped JSON data -> model/user
 | Host config/plugins/credentials | Python API in -I process, no user config loader; plugins disabled before import; no cookies/netrc/proxy inheritance | Fixed options, isolated worker integration |
 | Processing command execution | JS/remote components/FFmpeg/postprocessors disabled; worker denies subprocess creation | Process-denial fixture; direct HTTPS format selection |
 | Resource exhaustion | Default90s/max180s; media50MiB/max200MiB; subtitle1MiB/max2MiB; text20k/max50k; output512KiB/stderr64KiB; metadata network4MiB, download media+4MiB | Budget, compression, progress and cancellation tests |
-| Compression/error-body bombs | Identity encoding; reject compression and wrap byte budget before yt-dlp decompression/error processing | gzip/deflate/br and error-body regressions |
+| Compression/error-body bombs | Identity encoding; reject compression and bound reads before yt-dlp decompression/error processing | gzip/deflate/br and error-body regressions |
 | Leaking upstream data | Minimal worker environment; curated results/errors; no signed media URLs, headers or raw upstream errors returned | Result/error contracts |
 | Orphans/memory | Windows kill-on-close Job Object; Linux parent-death SIGKILL;512MiB worker memory on Windows/Linux; kill+wait on cancellation | Running-worker termination test; platform CI |
 | Supply chain/drift | Exact dependencies, lockfiles, ignore-scripts; canonical skill/schema synchronization check | Frozen installs and packaging checks |
@@ -56,6 +56,8 @@ Remote text -> bounded escaped JSON data -> model/user
    only to known metadata; direct files with missing codec/resolution metadata
    may be accepted under the same byte/protocol limits. Resolution is not an
    independently measured security guarantee, and downloaded media is not decoded.
+   yt-dlp extractors may internally parse site XML; returned-text escaping is not
+   a claim that the dependency never parses XML or has no parser vulnerabilities.
 7. macOS has normal kill+wait but lacks the implemented Windows/Linux memory
    and parent-death controls. It is an installation path, not a verified strong
    isolation target; validated target platforms are Windows and Linux.

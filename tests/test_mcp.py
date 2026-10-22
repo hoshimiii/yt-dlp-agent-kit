@@ -10,6 +10,7 @@ from unittest.mock import patch
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
+from yt_agent import __version__
 from yt_agent import mcp_server
 
 
@@ -23,6 +24,7 @@ class MCPTests(unittest.IsolatedAsyncioTestCase):
                 args=["-I", "-m", "yt_agent.mcp_server"], env={**os.environ, "YTAGENT_CONFIG": str(config)})
             async with stdio_client(params) as (read, write), ClientSession(read, write) as session:
                 init = await session.initialize()
+                self.assertEqual(init.serverInfo.version, __version__)
                 self.assertIn("untrusted", init.instructions)
                 tools = (await session.list_tools()).tools
                 self.assertEqual(len(tools), 4)

@@ -59,7 +59,7 @@ dsh --profile media-agent
 
 也可在该 profile 的 patch 中覆盖插件行配置，设置 `pythonPath`、`configPath`。Python 必须是安装核心的绝对可执行路径，配置路径也必须绝对；缺失时拒绝加载。它们是操作者配置，不是工具参数。
 
-分发时先运行 `python scripts/sync_dsh_assets.py --check`，然后在 `adapters/dsh` 目录运行 `npm pack --ignore-scripts`。使用 `dsh plugin --profile media-agent add /absolute/path/dsh-yt-dlp-agent-kit-0.1.0.tgz` 安装 tarball。JS 已包含，不含 prepare/postinstall，不需要开放构建脚本；Python 核心仍单独安装。
+分发时先运行 `python scripts/sync_dsh_assets.py --check`，然后在 `adapters/dsh` 目录运行 `npm pack --ignore-scripts`。使用 `dsh plugin --profile media-agent add /absolute/path/dsh-yt-dlp-agent-kit-0.2.0.tgz` 安装 tarball。JS 已包含，不含 prepare/postinstall，不需要开放构建脚本；Python 核心仍单独安装。
 
 卸载：`dsh plugin --profile media-agent remove dsh-yt-dlp-agent-kit`。不删除媒体或审批状态。
 

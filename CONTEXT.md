@@ -52,6 +52,19 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 
 ## Verification and Remaining Risk
 
+- Current v0.2.0: root inspected all five diffs; new independent Sol aggregate
+  review ACCEPT with cross-Service replay/admission/failure check. Source and
+  final installed Windows/Linux wheel each passed51Python and DSH5; installed
+  dependencies are compatible. Astra final cross-entry built-package flow PASS.
+  Python hashed audit/npm full audit clean; skill/assets/Claude manifests pass.
+- Final Linux gate completed after host resources improved from a transient
+  WSL HCS/ERROR_NO_SYSTEM_RESOURCES cold-start failure. One scoped retry passed;
+  no system settings/unrelated processes changed and no acceptance was lowered.
+- Wheel/source/DSH content and absence of caches/state checked, SHA-256 sums
+  generated. Local pre-push quality gate is complete; no media probe was rerun.
+- Final-local-gate checkpoint saved; the Superrouter native compression reminder
+  helper was launched once. Work continued without waiting for compaction.
+- Baseline v0.1.0 evidence below is historical, not final v0.2.0 acceptance:
 - 33 Python tests pass from the final installed wheel in a separate environment.
 - Four native DSH tests passed: actual registries, disposal and Python bridge.
 - Claude native plugin/marketplace validation passes; Codex local marketplace
@@ -86,7 +99,8 @@ components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
       review and three-entry independent retest pass; root48Python/5DSH pass.
 - [x] Round 5: validated show-plan limit/switch fields; both reviews and
       independent CLI retest pass; root50Python pass. No model tool added.
-- [ ] Final package/version/docs, Windows/Linux CI, remote and artifact verification.
+- [x] Final package/version/docs and full local Windows/Linux quality gate.
+- [ ] Unified push, ordinary CI, versioned release and public artifact verification.
 
 Requirements, joint reviews and bounded acceptance evidence are recorded in
 docs/ITERATIONS.md. Source v0.1.0 verification above is baseline evidence, not
@@ -95,9 +109,7 @@ record; current repository evidence is authoritative.
 
 ## Exact Next Action
 
-Five rounds accepted. Prepare v0.2.0 consistent metadata, a version-consistency
-regression, final docs and exact packages. Root reviews aggregate diff; run full
-Windows/Linux installed-wheel and native DSH suites, asset/skill/manifest checks,
-known-dependency audits and package-byte/hash validation BEFORE the next push.
-R4 Linux installed wheel already passed48Python/5DSH; no system packages/network
-settings changed. No media probes, live profile changes or safety relaxation.
+Commit final v0.2.0 metadata/docs and push the accepted batch to the same repo;
+observe ordinary CI only, then publish the exact packages and verify downloaded
+hashes/remote state. Complete local gate passed before any next push. All local
+test sessions ended; no manual external CI jobs or system repairs authorized.
