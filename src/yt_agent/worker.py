@@ -201,9 +201,10 @@ def main():
             resource.setrlimit(resource.RLIMIT_FSIZE, (max_file, max_file))
         result = run(request)
         sys.stdout.write(dumps({"ok": True, "result": result}))
-    except Exception:
+    except Exception as exc:
         # Upstream errors may contain signed URLs, local paths or remote instructions.
-        sys.stdout.write(dumps({"ok": False, "error": "Upstream operation failed or was blocked by policy; no automatic policy relaxation."}))
+        message = str(exc) if isinstance(exc, Rejected) else "Upstream operation failed or was blocked by policy; no automatic policy relaxation."
+        sys.stdout.write(dumps({"ok": False, "error": message}))
         sys.exit(1)
 
 

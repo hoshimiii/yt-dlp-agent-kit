@@ -9,7 +9,7 @@ import sys
 from yt_agent.policy import Policy
 from yt_agent.service import Service
 
-URL = "https://media.w3.org/2010/05/bunny/trailer.mp4"
+URL = "https://media.w3.org/2010/05/sintel/trailer.mp4"
 
 
 def main():

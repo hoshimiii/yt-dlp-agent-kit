@@ -80,7 +80,7 @@ def run_worker(policy, request, directory, cancel_event=None):
             except (ValueError, UnicodeError) as exc:
                 raise Rejected("Invalid worker response") from exc
             if proc.returncode != 0 or value.get("ok") is not True:
-                raise Rejected("Upstream operation failed or was blocked by policy; check target availability without relaxing policy")
+                raise Rejected(value.get("error", "Upstream operation failed or was blocked by policy"))
             return value["result"]
         finally:
             if proc.poll() is None:

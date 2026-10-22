@@ -16,7 +16,7 @@ Active Authorization:
 - Permitted: implementation, scoped dependency installation in this project,
   tests, isolated adapter validation, documentation, Git commits and publication.
 - Boundary: local CPU/network and standard free public GitHub CI, no paid APIs or media upload; public tests
-  use the fixed public W3C bunny trailer fixture, at most one <=5 MiB media download.
+  use a fixed public W3C trailer fixture, at most one <=5 MiB media download.
 - Prohibited: modifying existing TTS assets or live agent settings, reading
   browser credentials/cookies, publishing local paths/logs/secrets or unrelated
   files, npm/PyPI publication, external messages, paid infrastructure.
@@ -80,4 +80,7 @@ external probe retrieved metadata but failed direct-file format selection;
 no completed media download. Reproduced missing codec/resolution metadata in
 the actual Generic extractor, fixed optional metadata selection, added test31.
 Known >720p remains excluded; unknown resolution is documented rather than
-claimed verified. Same fixed <=5MiB fixture/approval will be retried once.
+claimed verified. HEAD verification then established the bunny fixture is
+11,053,871 bytes, above the existing 5MiB cap; denial is expected. The same
+provider's Sintel fixture is 4,372,373 bytes by HEAD, within the unchanged cap.
+Use that fixed sample for the one normal live download; no cap increase.
