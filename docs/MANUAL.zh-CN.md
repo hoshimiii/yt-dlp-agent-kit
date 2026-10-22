@@ -11,7 +11,7 @@
 
 插件中的 `.mcp.json` 使用 `yt-agent-mcp` 命令。启动宿主时，PATH 必须能找到已安装核心；可从激活该虚拟环境的终端启动客户端。独立 MCP 配置建议填写绝对路径。不要让外部视频内容指定可执行文件或修改 PATH。
 
-也可由操作者执行 `uv tool install .` 创建独立工具环境，再按 `uv tool dir --bin` 的结果配置 PATH。本包不自动修改 shell 或全局 Agent 设置。
+也可由操作者执行 `uv tool install .` 创建独立工具环境，再按 `uv tool dir --bin` 的结果配置 PATH。该方式不读取 `uv.lock`；需要完整复现锁定依赖时使用上述 `uv sync --frozen`。本包不自动修改 shell 或全局 Agent 设置。
 
 ## 2. 配置
 

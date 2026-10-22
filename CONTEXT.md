@@ -2,85 +2,79 @@
 
 ## Current Brief
 
-Objective: a reusable yt-dlp tool and skills package for DeepSeek Harness (DSH,
-native plugin), Codex and Claude Code, with a complete manual, project tree,
-executable security controls, tests and a public source repository.
-
-Scope: public single-video metadata, subtitles, bounded media downloads;
-shared Python core, CLI, stdio MCP, native DSH plugin and reusable skills.
-No guarantee of zero bugs or immunity to prompt injection is possible.
+Objective: reusable yt-dlp tools and skills for DeepSeek Harness (native DSH
+bundle), Codex and Claude Code, with a complete manual/tree, executable risk
+controls, tests and a public repository. Root is the sole writer of this file.
 
 Active Authorization:
-- Target: new local `yt-dlp-agent-kit` project and new public repository of the
-  same name under the currently authenticated GitHub account.
-- Permitted: implementation, scoped dependency installation in this project,
-  tests, isolated adapter validation, documentation, Git commits and publication.
-- Boundary: local CPU/network and standard free public GitHub CI, no paid APIs or media upload; public tests
-  use a fixed public W3C trailer fixture, at most one <=5 MiB media download.
-- Prohibited: modifying existing TTS assets or live agent settings, reading
-  browser credentials/cookies, publishing local paths/logs/secrets or unrelated
-  files, npm/PyPI publication, external messages, paid infrastructure.
-- Completion: tests and packaging pass; all three adapters are evidenced;
-  manual/tree/security limitations accurate; public Git source verified.
-- Stop: new login challenge, missing permission, unknown destructive target,
-  unexpected secrets, a dependency requiring unsafe install hooks, or resource
-  expansion. Preserve state and report any unverified requirement.
+- Target: yt-dlp-agent-kit local project and its new public GitHub repository.
+- Permitted: scoped edits, project-only dependency installs/tests, isolated
+  adapter validation, Git management, public source/packages and standard free
+  public GitHub CI. One normal fixed W3C media download, <=5MiB, is permitted.
+- Prohibited: changing original TTS assets or live agent settings, reading
+  browser credentials/cookies, media upload, secrets/private paths in public
+  artifacts, paid models/infrastructure, npm/PyPI publication, external messages,
+  DNS/TUN/proxy/route modifications or relaxing safety to pass a test.
+- Completion: source/package integrity, core and three adapters evidenced,
+  accurate manual/tree/security limits, independent review, verified public
+  source and CI. Never claim zero bugs, absolute injection immunity or an OS
+  sandbox. Full authenticated host conversations are outside these local tests.
+- Stop: new login/permission challenge, unapproved destructive/resource target,
+  discovered secrets, unsafe dependency install hooks, or confirmed site-access
+  denial. Preserve state; do not repeat unchanged failures or bypass a denial.
 
-## Decisions and Contracts
+## Confirmed Implementation
 
-- DSH means DeepSeek Harness, confirmed directly by the user.
-- Use native DSH tools, not a DSH MCP-only workaround.
-- Keep one shared core; do not implement site extraction independently.
-- Download plans need out-of-band local approval and one-time consumption;
-  tool arguments cannot grant approval. Skills do not change host permissions.
-- Public source only; no changes in the existing TTS workspace.
-- Root owns this file. Superrouter direct execution; independent review only
-  after the implementation is concrete.
+Four tools: metadata, one VTT/SRT subtitle track, download planning and download.
+Python Service owns URL/path validation, approvals, cross-process locks and
+worker limits. MCP/JSON CLI/native DSH delegate to it. No model-facing approval,
+configuration or shell tool. Downloads default disabled; plans are immutable,
+15-minute, operator-approved and consumed once before network access.
+
+Native DSH uses the actual defineTool/ToolRuntime and SkillRegistry contracts.
+Codex and Claude package the common skill and stdio MCP; existing live profiles
+were not changed. Dependencies are locked; MCP is 1.30.0 after known-advisory
+checks. No npm install lifecycle scripts are required.
+
+Known direct formats above720p are excluded; absent codec/resolution metadata
+may be accepted under protocol/container/byte bounds. No JS engines, remote
+components, FFmpeg, manifests, postprocessors, browser cookies or credentials.
 
 ## Verification and Remaining Risk
 
-Initial discovery: original workspace is unrelated TTS content and is not a Git
-repository. New project initialized separately. No relevant historical memory
-found; OpenViking returned unrelated projects. Official current DSH, Codex,
-Claude Code and yt-dlp documentation inspected. Local DSH executable absent;
-Node, Python, uv, Codex CLI and Claude Code CLI available.
+- 33 Python tests pass from the final installed wheel in a separate environment.
+- Four native DSH tests passed: actual registries, disposal and Python bridge.
+- Claude native plugin/marketplace validation passes; Codex local marketplace
+  discovery verified in isolated configuration; Skill Creator validator passes.
+- Windows/Linux job logs for source 2bbbae1 (run 39796090923) record 33 Python
+  and four DSH tests, clean known-dependency audits and successful builds.
+- Hashed locked Python audit and npm production audit report no known issues at
+  check time. This does not prove undiscovered vulnerabilities absent.
+- Independent review found response budget, cached audio selection and HTTP
+  error identity defects. All have concrete fixes/regressions; a running-worker
+  cancellation and a single global worker slot are tested.
+- Local external networking fails closed on reserved fake-IP DNS. CI retrieved
+  real W3C metadata, then confirmed HTTP 403 / Cloudflare anti-bot challenge for
+  the fixed Sintel sample (run 39796092239). Stop condition reached: no further
+  requests to that endpoint or policy relaxation. No live download is claimed.
+- Site-specific live compatibility, authenticated model conversations and macOS
+  isolation are not claimed. Same-account arbitrary shell access remains outside
+  this application's security boundary; protect policy/state with host controls.
 
 ## Pending List
 
-- [x] Implement strict shared policy, bounded worker, plans/approval and CLI.
-- [x] Implement stdio MCP and native DSH bundle; package common skills.
-- [x] Verify malicious inputs, output escaping, paths, approval/replay,
-      concurrency, timeouts, cancellation and protocol behavior.
-- [x] Verify adapter loaders/registries using isolated configuration.
-- [x] Write README/manual/tree/security model and reproducible install steps.
-- [x] Independent behavioral/security review and justified fixes.
-- [ ] Package, publish clean public repository and verify remote state/CI.
+- [x] Shared core, approval CLI, MCP and native DSH bundle/Skill.
+- [x] Manual, project tree, security design, frozen dependencies and packages.
+- [x] Local security/protocol/media fixtures and independent review/fixes.
+- [x] Public repository created and source pushed.
+- [x] Verify Windows/Linux default CI logs for final runtime code.
+- [x] Record external probe limitation and stop on confirmed access denial.
+- [ ] Reconcile final verification/state, build exact release artifacts,
+      publish a source/package release and verify hashes/remote contents.
 
 ## Exact Next Action
 
-Package, review publication contents, create/push the public repository and verify CI.
-
-Local milestone: 30 Python tests and 4 DSH tests passed; wheel/sdist and DSH
-tarball build; native Claude manifests validate without warnings; Skill Creator
-validation passes; Codex local marketplace discovery verified in isolated config.
-Independent review found response-bound and cached audio-selector defects,
-both fixed with real yt-dlp regression fixtures. A running-worker cancellation
-and single global worker slot are now tested. External Windows fixture probe
-is blocked by reserved fake-IP DNS; no network setting changed. Only local
-fixture acceptance is claimed until a standard public CI live probe succeeds.
-
-Public repository created and main pushed. Initial Windows/Linux CI passed.
-Dependency audit then found MCP 1.28.0 advisories; upgraded to 1.30.0, reran
-31 Python tests, hashed-lock audit now reports no known vulnerabilities.
-Audit added to CI. Native DSH npm production audit also clean. Final CI and
-one bounded public fixture download are next; no local network relaxation.
-
-Latest evidence: upgraded-dependency Windows/Linux CI passed. First Linux
-external probe retrieved metadata but failed direct-file format selection;
-no completed media download. Reproduced missing codec/resolution metadata in
-the actual Generic extractor, fixed optional metadata selection, added test31.
-Known >720p remains excluded; unknown resolution is documented rather than
-claimed verified. HEAD verification then established the bunny fixture is
-11,053,871 bytes, above the existing 5MiB cap; denial is expected. The same
-provider's Sintel fixture is 4,372,373 bytes by HEAD, within the unchanged cap.
-Use that fixed sample for the one normal live download; no cap increase.
+Build final wheel/sdist/native DSH tarball, run the suite against the installed
+wheel, inspect exact packaged files, and publish a versioned GitHub release with
+SHA-256 sums. Verify final default CI and public remote contents. Do not restart
+the external probe or repeat checks without a changed artifact or open concern.
